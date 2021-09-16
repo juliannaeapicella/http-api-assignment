@@ -1,26 +1,33 @@
 const http = require('http');
 const url = require('url');
-const htmlHandler = require('./htmlResponses.js');
+const query = require('querystring');
+const responseHandler = require('./responses.js');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
 const urlStruct = {
-    'GET': {
-        '/': htmlHandler.getIndex,
-        '/style.css': htmlHandler.getCSS
-    }
+  '/': responseHandler.getIndex,
+  '/style.css': responseHandler.getCSS,
+  '/success': responseHandler.success,
+  '/badRequest': responseHandler.badRequest,
+  '/unauthorized': responseHandler.unauthorized,
+  '/forbidden': responseHandler.forbidden,
+  '/internal': responseHandler.internal,
+  '/notImplemented': responseHandler.notImplemented,
+  '/notFound': responseHandler.notFound,
 };
 
 const onRequest = (request, response) => {
   const parsedUrl = url.parse(request.url);
 
-  console.dir(parsedUrl.pathname);
-  console.dir(request.method);
+  const acceptedTypes = request.headers.accept.split(',');
 
-  if (urlStruct[request.method][parsedUrl.pathname]) {
-    urlStruct[request.method][parsedUrl.pathname](request, response);
+  const params = query.parse(parsedUrl.query);
+
+  if (urlStruct[parsedUrl.pathname]) {
+    urlStruct[parsedUrl.pathname](request, response, acceptedTypes, params);
   } else {
-    
+    urlStruct['/notFound'](request, response, acceptedTypes);
   }
 };
 
