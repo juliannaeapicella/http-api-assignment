@@ -21,20 +21,40 @@
       if(type === 'application/json') {
         const obj = JSON.parse(xhr.response);
 
-        h1.textContent = `${obj.id}`;
+        h1.textContent = getStatusName(xhr.status);
         p.textContent = `Message: ${obj.message}`; 
       }
       else if (type === 'text/xml') {
-        const id = xhr.responseXML.querySelector('id').textContent;
         const message = xhr.responseXML.querySelector('message').textContent;
 		
-        h1.textContent = `${id}`;
+        h1.textContent = getStatusName(xhr.status);
         p.textContent = `Message: ${message}`; 
       }
       
       content.appendChild(h1);
       content.appendChild(p);
     };
+
+    const getStatusName = (status) => {
+      switch (status) {
+        case 200: 
+          return `Success`;
+        case 400:
+          return `Bad Request`;
+        case 401:
+          return `Unauthorized`;
+        case 403:
+          return `Forbidden`;
+        case 404: 
+          return `Resource Not Found`;
+        case 500:
+          return `Internal Server Error`;
+        case 501:
+          return `Not Implemented`;
+        default:
+          return `Error code not implemented by client.`;
+      }
+    }
 
     const sendAjax = (url, acceptedType) => {
       const xhr = new XMLHttpRequest();

@@ -15,10 +15,10 @@ const respondJSON = (request, response, status, object) => {
 
 const respondXML = (request, response, status, object) => {
   let responseXML = '<response>';
+  responseXML = `${responseXML} <message>${object.message}</message>`;
   if (object.id) {
     responseXML = `${responseXML} <id>${object.id}</id>`;
   }
-  responseXML = `${responseXML} <message>${object.message}</message>`;
   responseXML = `${responseXML} </response>`;
 
   return respond(request, response, status, responseXML, 'text/xml');
@@ -44,7 +44,6 @@ const success = (request, response, acceptedTypes) => {
 
 const badRequest = (request, response, acceptedTypes, params) => {
   const obj = {
-    id: 'badRequest',
     message: 'This request has the required parameters.',
   };
 
@@ -64,12 +63,11 @@ const badRequest = (request, response, acceptedTypes, params) => {
 
 const unauthorized = (request, response, acceptedTypes, params) => {
   const obj = {
-    id: 'unauthorized',
-    message: 'You do not have access to this content.',
+    message: 'You have successfully viewed the content.',
   };
 
-  if (!params.loggedIn || params.loggedIn !== 'true') {
-    obj.message = 'Missing loggedIn query parameter set to true.';
+  if (!params.loggedIn || params.loggedIn !== 'yes') {
+    obj.message = 'Missing loggedIn query parameter set to yes.';
     obj.id = 'unauthorized';
 
     return acceptedTypes[0] === 'text/xml'
@@ -84,8 +82,8 @@ const unauthorized = (request, response, acceptedTypes, params) => {
 
 const forbidden = (request, response, acceptedTypes) => {
   const obj = {
-    id: 'forbidden',
     message: 'You do not have access to this content.',
+    id: 'forbidden',
   };
 
   return acceptedTypes[0] === 'text/xml'
@@ -95,8 +93,8 @@ const forbidden = (request, response, acceptedTypes) => {
 
 const internal = (request, response, acceptedTypes) => {
   const obj = {
-    id: 'internalError',
     message: 'Internal Server Error. Something went wrong.',
+    id: 'internalError',
   };
 
   return acceptedTypes[0] === 'text/xml'
@@ -106,8 +104,8 @@ const internal = (request, response, acceptedTypes) => {
 
 const notImplemented = (request, response, acceptedTypes) => {
   const obj = {
-    id: 'notImplemented',
     message: 'A GET request for this page has not been implemented yet. Check again later for updated content.',
+    id: 'notImplemented',
   };
 
   return acceptedTypes[0] === 'text/xml'
@@ -117,8 +115,8 @@ const notImplemented = (request, response, acceptedTypes) => {
 
 const notFound = (request, response, acceptedTypes) => {
   const obj = {
-    id: 'notFound',
     message: 'The page you are looking for was not found.',
+    id: 'notFound',
   };
 
   return acceptedTypes[0] === 'text/xml'
